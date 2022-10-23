@@ -1,34 +1,34 @@
-// SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.9;
+//SPDX-License-Identifier: Unlicensed
+pragma solidity 0.7.4;
+pragma experimental ABIEncoderV2;
 
-// Uncomment this line to use console.log
+import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+
 // import "hardhat/console.sol";
 
-contract Lock {
-    uint public unlockTime;
-    address payable public owner;
+interface IERC20Extended is IERC20 {
+    function decimals() external view returns (uint8);
+}
 
-    event Withdrawal(uint amount, uint when);
+contract Lawn is
+    Initializable,
+    OwnableUpgradeable
+{
+    using SafeMath for uint256;
+    using SafeERC20 for IERC20Extended;
+    using SafeERC20 for IERC20;
 
-    constructor(uint _unlockTime) payable {
-        require(
-            block.timestamp < _unlockTime,
-            "Unlock time should be in the future"
-        );
+    event CommunityCreated(uint256 indexed communityId);
+    event User(
+        address indexed overseer,
+        uint256 indexed communityId,
+        address indexed userAddress,
+    );
 
-        unlockTime = _unlockTime;
-        owner = payable(msg.sender);
-    }
 
-    function withdraw() public {
-        // Uncomment this line, and the import of "hardhat/console.sol", to print a log in your terminal
-        // console.log("Unlock time is %o and block timestamp is %o", unlockTime, block.timestamp);
 
-        require(block.timestamp >= unlockTime, "You can't withdraw yet");
-        require(msg.sender == owner, "You aren't the owner");
-
-        emit Withdrawal(address(this).balance, block.timestamp);
-
-        owner.transfer(address(this).balance);
-    }
 }
