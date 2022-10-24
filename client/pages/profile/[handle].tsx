@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { client, getProfile } from "../../api";
 import { useQuery } from "urql";
+
+
 type Profile = {
   picture: {
     original: {
